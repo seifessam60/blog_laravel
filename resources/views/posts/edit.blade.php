@@ -1,73 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Edit Post</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input[type="text"],
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-family: Arial, sans-serif;
-        }
-        textarea {
-            min-height: 200px;
-        }
-        .btn {
-            padding: 10px 20px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .error {
-            color: #dc3545;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-    </style>
-</head>
-<body>
-    <a href="{{ route('posts.show', $post) }}">← Back to Post</a>
-    <h1>Edit Post</h1>
-    <form action="{{ route('posts.update', $post) }}" method="POST">
-        @csrf
-        @method('PUT')
-        <div class="form-group">
-            <label for="title">Title: </label>
-            <input type="text" name="title" id="title" value="{{ old('title', $post->title) }}" required>
-            @error('title')
-                <div class="error">{{ $message }}</div>
-            @enderror
-        </div>
-        <div class="form-group">
-            <label for="content">Content: </label>
-            <textarea name="content" id="content" style="resize:none" cols="30" rows="10">{{ old('content', $post->content) }}</textarea>
-            @error('content')
-                <div class="error">{{ $message }}</div>
-            @enderror
-        </div>
-        <button type="submit" class="btn">Update Post</button>
-    </form>
-</body>
-</html>
+@extends('layout')
+
+@section('title', 'Edit Post')
+
+@section('content')
+    <!-- Back Button -->
+    <a href="{{ route('posts.show', $post) }}" 
+       class="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6 transition">
+        ← Back to Post
+    </a>
+
+    <!-- Form Card -->
+    <div class="bg-white rounded-xl shadow-sm p-8 border border-gray-100">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">✏️ Edit Post</h1>
+
+        <form action="{{ route('posts.update', $post) }}" method="POST" class="space-y-6">
+            @csrf
+            @method('PUT')
+            
+            <!-- Title Field -->
+            <div>
+                <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">
+                    Post Title
+                </label>
+                <input type="text" 
+                       name="title" 
+                       id="title" 
+                       value="{{ old('title', $post->title) }}"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                       placeholder="Enter the post title..."
+                       required>
+                @error('title')
+                    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Content Field -->
+            <div>
+                <label for="content" class="block text-sm font-semibold text-gray-700 mb-2">
+                    Post Content
+                </label>
+                <textarea name="content" 
+                          id="content" 
+                          rows="12"
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
+                          placeholder="Write the post content here..."
+                          required>{{ old('content', $post->content) }}</textarea>
+                @error('content')
+                    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="flex gap-3">
+                <button type="submit" 
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold transition">
+                    💾 Save Changes
+                </button>
+                <a href="{{ route('posts.show', $post) }}" 
+                   class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-8 py-3 rounded-lg font-semibold transition">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+@endsection
