@@ -15,7 +15,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->paginate(10);
+        $posts = auth()->user()->posts()->latest()->paginate(10);
         return view("posts.index", compact('posts'));
     }
 
@@ -36,7 +36,7 @@ class PostController extends Controller
             'title' => 'required|max:255',
             'content' => 'required'
         ]);
-        $post = Post::create([
+        $post = auth()->user()->posts()->create([
             'title' => $validated['title'],
             'slug' => Str::slug($validated['title']),
             'content' => $validated['content'],
@@ -51,6 +51,9 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        if ($post->user_id !== auth()->id()){
+            abort(403, 'Unauthorized action.');
+        }
         return view("posts.show", compact('post'));
     }
 
@@ -59,6 +62,9 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
+        if ($post->user_id !== auth()->id()){
+            abort(403, 'Unauthorized action.');
+        }
         return view("posts.edit", compact('post'));
     }
 
@@ -67,6 +73,9 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        if ($post->user_id !== auth()->id()){
+            abort(403, 'Unauthorized action.');
+        }
         $validated = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required'
@@ -86,6 +95,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        if ($post->user_id !== auth()->id()){
+            abort(403, 'Unauthorized action.');
+        }
         $post->delete();
 
         return redirect()->route('posts.index');
